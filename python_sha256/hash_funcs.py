@@ -1,3 +1,5 @@
+import utils
+
 # Returns an array with the parts of message converted to binary string.
 def convertToBinary(message):
     assert (message != "" or message is not None), "Message is empty"
@@ -53,13 +55,45 @@ def getBlocks(bin_pts):
         blocks.append(curr_block)
     return blocks
 
-def getMessageSchedule(blocks):
-    messages = [format(0, "032b").encode('utf-8') for _ in range(64)] # fill with 32-bit zeros
-    first_block = blocks[0]
+def getMessageSchedule(block):
+    assert block, "No blocks were found, array is empty"
+    messages = [format(0, "032b") for _ in range(64)] # fill with 32-bit zeros
     
     for i in range(0, 64, 4):
-        word = ''.join(first_block[i:i+4])
-        messages[i//4] = word.encode('utf-8')
+        word = ''.join(block[i:i+4])
+        messages[i//4] = word
     
+    for i in range(16, 64):
+        messages[i] = utils.calculateNextWord(messages[i-16], messages[i-15], messages[i-7], messages[i-2])
+
     return messages
 
+def getHashValues(schedule, baseValues):
+    assert schedule, "The schedule is empty"
+
+    if not baseValues:
+        baseValues = utils.initHashValues()
+
+    K_constants = utils.initKconsts()
+
+    workingVariables = baseValues.copy()
+    for i in range(64):
+        workingVariables = utils.updateVariables(workingVariables, K_constants[i], schedule[i])
+    
+    print(workingVariables)
+    
+    resultHashValues = []
+    for i in range(len(workingVariables)):
+        sumOfVals = (int(workingVariables[i], 2) + int(baseValues[i], 2)) & 0xFFFFFFFF
+        resultHashValues.append(format(sumOfVals, "032b"))
+
+    return resultHashValues
+
+def getSHA256(resultValues):
+    assert resultValues, "No values were given"
+
+    hash_string = ""
+    for byte in resultValues:
+        hash_string += format(int(byte, 2), "08x")
+    
+    return hash_string
