@@ -1,19 +1,34 @@
+# Function of bitwise right rotation, shifts all bits of
+# the binary number (32-bit) to the right by
+# given number of positions and inserts shifted
+# out bits to the left.
 def RightRotate(x, shift):
     rotated = ((x >> shift) | (x << (32 - shift))) & 0xFFFFFFFF
     return rotated
 
-def MedsigZero(x):
+# The lower sigma 0 function, which does specified bitwise
+# operations with given binary number (32-bit).
+# sigma0 =
+# (w_t-15 rightrotate 7) xor
+# (w_t-15 rightrotate 18) xor
+# (w_t-15 rightshift 3)
+def LowsigZero(x):
     return RightRotate(x, 7) ^ RightRotate(x, 18) ^ (x >> 3) 
-def MedsigOne(x):
+# The lower sigma 1 function, which does specified bitwise
+# operations with given binary number (32-bit).
+# sigma1 =
+# (w_t-2 rightrotate 17) xor
+# (w rightrotate 19) xor
+# (w rightshift 10)
+def LowsigOne(x):
     return RightRotate(x, 17) ^ RightRotate(x, 19) ^ (x >> 10)
 
+# Returns another word caclulated using formula:
+# w19 = w_t-16 + sigma0 + w_t-7 + sigma1
 def calculateNextWord(w0, w1, w9, w14):
-    w0 = int(w0, 2)
-    w1 = int(w1, 2)
-    w9 = int(w9, 2)
-    w14 = int(w14, 2)
+    (a, b, c, d) = variablesToInt([w0, w1, w9, w14])
 
-    nextWord = (w0 + MedsigZero(w1) + w9 + MedsigOne(w14)) & 0xFFFFFFFF
+    nextWord = (a + LowsigZero(b) + c + LowsigOne(d)) & 0xFFFFFFFF
     return format(nextWord, "032b")
 
 def isPrime(num):
