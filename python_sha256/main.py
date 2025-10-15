@@ -1,13 +1,16 @@
-import hashlib
+from hash_funcs import convertToBinary, getBlocks, getMessageSchedule, getHashValues, getSHA256
+from hashlib import sha256
 
-# source message (TODO: make this an input value)
-message = "hello world"
+msg = input("Input your message here: ")
+toBin = convertToBinary(msg)
+msg_blocks = getBlocks(toBin)
 
-# encoding message to bytes
-message_to_bytes = message.encode('utf-8')
+values = []
+for i in range(len(msg_blocks)):
+    msg_schedule = getMessageSchedule(msg_blocks[i])
+    values = getHashValues(msg_schedule, values)
 
-# encrypting message
-message_encrypted = hashlib.sha256(message_to_bytes)
 
-# printing the result
-print(f"Encrypted message: {message_encrypted.hexdigest()}")
+print(f"SHA256: {getSHA256(values)}")
+print(f"HSHLIB: {sha256(msg.encode()).hexdigest()}")
+print(f"SHA256 same as in hashlib: {getSHA256(values) == sha256(msg.encode()).hexdigest()}")

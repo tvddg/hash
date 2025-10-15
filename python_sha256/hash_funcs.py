@@ -40,7 +40,7 @@ def getBlocks(bin_pts):
                 # length section
                 else:
                     len_section -= 1
-                    curr_block[j] = format(msg_bits >> (8 * len_section), "08b")
+                    curr_block[j] = format((msg_bits >> (8 * len_section)) & 0xFF, "08b")
             # filling the block with byte message
             else:
                 curr_block[j] = bin_pts[j + i * 64] 
@@ -79,8 +79,6 @@ def getHashValues(schedule, baseValues):
     workingVariables = baseValues.copy()
     for i in range(64):
         workingVariables = utils.updateVariables(workingVariables, K_constants[i], schedule[i])
-    
-    print(workingVariables)
     
     resultHashValues = []
     for i in range(len(workingVariables)):

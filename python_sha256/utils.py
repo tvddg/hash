@@ -72,8 +72,8 @@ def updateVariables(variables, curr_k, curr_w):
     majority = Majority(a, b, c)
     temp2 = Temp2(capsig0, majority)
 
-    new_variables = [ (temp1 + temp2) & 0xFFFFFFFF, a, b, c, 
-            (d + temp1) & 0xFFFFFFFF, e, f, g ]
+    new_variables = [ ((temp1 + temp2) & 0xFFFFFFFF), a, b, c, 
+            ((d + temp1) & 0xFFFFFFFF), e, f, g ]
     return variablesToBin(new_variables)
 
 def CapsigZero(x):
