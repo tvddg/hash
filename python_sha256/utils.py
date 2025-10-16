@@ -8,23 +8,14 @@ def RightRotate(x, shift):
 
 # The lower sigma 0 function, which does specified bitwise
 # operations with given binary number (32-bit).
-# sigma0 =
-# (w_t-15 rightrotate 7) xor
-# (w_t-15 rightrotate 18) xor
-# (w_t-15 rightshift 3)
 def LowsigZero(x):
     return RightRotate(x, 7) ^ RightRotate(x, 18) ^ (x >> 3) 
 # The lower sigma 1 function, which does specified bitwise
 # operations with given binary number (32-bit).
-# sigma1 =
-# (w_t-2 rightrotate 17) xor
-# (w rightrotate 19) xor
-# (w rightshift 10)
 def LowsigOne(x):
     return RightRotate(x, 17) ^ RightRotate(x, 19) ^ (x >> 10)
 
-# Returns another word caclulated using formula:
-# w19 = w_t-16 + sigma0 + w_t-7 + sigma1
+# Returns another word caclulated using formula.
 def calculateNextWord(w0, w1, w9, w14):
     (a, b, c, d) = variablesToInt([w0, w1, w9, w14])
 
